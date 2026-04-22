@@ -58,48 +58,57 @@ async function loadData() {
   return null;
 }
 
-function splitLine(line) {
-  // Rileva automaticamente il separatore: ; oppure ,
-  const hasSemicolon = (line.match(/;/g)||[]).length;
-  const hasComma = (line.match(/,/g)||[]).length;
-  const sep = hasSemicolon >= hasComma ? ';' : ',';
-  return line.split(sep).map(c => c.trim().replace(/^"|"$/g,''));
+// Parser CSV corretto: gestisce campi tra virgolette con virgola decimale dentro
+// Es: 07/01/2026,80,"26,1","20,8",...
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur.trim());
+  return result;
 }
 
 function toFloat(s) {
-  if (!s) return NaN;
-  // Gestisce sia "20,8" che "20.8"
-  return parseFloat(s.replace(',','.'));
+  if (!s || s === '') return NaN;
+  // Converte "26,1" → 26.1 oppure "26.1" → 26.1
+  return parseFloat(s.replace(',', '.'));
 }
 
 function parseCSV(text) {
   const lines = text.trim().split('\n').filter(l => l.trim());
-  if (lines.length < 2) return [];
-
-  // Determina separatore dalla riga header
-  const header = lines[0];
-  const sep = (header.match(/;/g)||[]).length >= (header.match(/,/g)||[]).length ? ';' : ',';
-
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(sep).map(c => c.trim().replace(/^"|"$/g,''));
+    const cols = parseCSVLine(lines[i]);
     if (!cols[0] || !cols[1] || cols[1] === '') continue;
     const peso = toFloat(cols[1]);
     if (isNaN(peso)) continue;
     rows.push({
       d:       cols[0].length > 5 ? cols[0].substring(0,5) : cols[0],
       data:    cols[0],
-      peso,
-      bmi:     toFloat(cols[2]),
-      grasso:  toFloat(cols[3]),
-      mgras:   toFloat(cols[4]),
-      muscolo: toFloat(cols[5]),
-      mskel:   toFloat(cols[6]),
-      moss:    toFloat(cols[7]),
-      acqua:   toFloat(cols[9]),
-      gvisc:   toFloat(cols[11]),
-      bmr:     toFloat(cols[12]),
-      eta:     toFloat(cols[13]),
+      peso,                      // col 1
+      bmi:     toFloat(cols[2]), // col 2
+      grasso:  toFloat(cols[3]), // col 3
+      mgras:   toFloat(cols[4]), // col 4
+      muscolo: toFloat(cols[5]), // col 5
+      mskel:   toFloat(cols[6]), // col 6
+      moss:    toFloat(cols[7]), // col 7
+      prot:    toFloat(cols[8]), // col 8
+      acqua:   toFloat(cols[9]), // col 9
+      gsub:    toFloat(cols[10]),// col 10
+      gvisc:   toFloat(cols[11]),// col 11
+      bmr:     toFloat(cols[12]),// col 12
+      eta:     toFloat(cols[13]),// col 13
     });
   }
   return rows;
