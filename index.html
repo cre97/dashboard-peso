@@ -35,8 +35,6 @@ h1{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:4px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 const SHEET_CSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaUopvY9C2Gn9_yHKCYnyagjy-5_JFL-1EWcIxhNdTcskCd0h1eolIyrt_rmizDw2Hl-BzYSfjX-9t/pub?gid=0&single=true&output=csv';
-
-// Prova con proxy CORS, poi diretto
 const URLS = [
   'https://corsproxy.io/?' + encodeURIComponent(SHEET_CSV),
   'https://api.allorigins.win/raw?url=' + encodeURIComponent(SHEET_CSV),
@@ -55,33 +53,53 @@ async function loadData() {
     } catch(e) { continue; }
   }
   document.getElementById('app').innerHTML = `
-    <div class="err">
-      Impossibile caricare i dati.<br>
-      Controlla la connessione e riprova.<br><br>
-      <button onclick="location.reload()" style="padding:8px 16px;border-radius:6px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-size:13px">↺ Riprova</button>
-    </div>`;
+    <div class="err">Impossibile caricare i dati.<br>Controlla la connessione e riprova.<br><br>
+    <button onclick="location.reload()" style="padding:8px 16px;border-radius:6px;border:none;background:#1a1a1a;color:#fff;cursor:pointer;font-size:13px">↺ Riprova</button></div>`;
   return null;
+}
+
+function splitLine(line) {
+  // Rileva automaticamente il separatore: ; oppure ,
+  const hasSemicolon = (line.match(/;/g)||[]).length;
+  const hasComma = (line.match(/,/g)||[]).length;
+  const sep = hasSemicolon >= hasComma ? ';' : ',';
+  return line.split(sep).map(c => c.trim().replace(/^"|"$/g,''));
+}
+
+function toFloat(s) {
+  if (!s) return NaN;
+  // Gestisce sia "20,8" che "20.8"
+  return parseFloat(s.replace(',','.'));
 }
 
 function parseCSV(text) {
   const lines = text.trim().split('\n').filter(l => l.trim());
+  if (lines.length < 2) return [];
+
+  // Determina separatore dalla riga header
+  const header = lines[0];
+  const sep = (header.match(/;/g)||[]).length >= (header.match(/,/g)||[]).length ? ';' : ',';
+
   const rows = [];
   for (let i = 1; i < lines.length; i++) {
-    const cols = lines[i].split(',').map(c => c.trim().replace(/^"|"$/g,''));
+    const cols = lines[i].split(sep).map(c => c.trim().replace(/^"|"$/g,''));
     if (!cols[0] || !cols[1] || cols[1] === '') continue;
-    const peso = parseFloat(cols[1].replace(',','.'));
+    const peso = toFloat(cols[1]);
     if (isNaN(peso)) continue;
     rows.push({
       d:       cols[0].length > 5 ? cols[0].substring(0,5) : cols[0],
       data:    cols[0],
       peso,
-      bmi:     parseFloat((cols[2]||'').replace(',','.')),
-      grasso:  parseFloat((cols[3]||'').replace(',','.')),
-      muscolo: parseFloat((cols[5]||'').replace(',','.')),
-      acqua:   parseFloat((cols[9]||'').replace(',','.')),
-      bmr:     parseFloat((cols[12]||'').replace(',','.')),
-      gvisc:   parseFloat((cols[11]||'').replace(',','.')),
-      eta:     parseFloat((cols[13]||'').replace(',','.')),
+      bmi:     toFloat(cols[2]),
+      grasso:  toFloat(cols[3]),
+      mgras:   toFloat(cols[4]),
+      muscolo: toFloat(cols[5]),
+      mskel:   toFloat(cols[6]),
+      moss:    toFloat(cols[7]),
+      acqua:   toFloat(cols[9]),
+      gvisc:   toFloat(cols[11]),
+      bmr:     toFloat(cols[12]),
+      eta:     toFloat(cols[13]),
     });
   }
   return rows;
@@ -102,6 +120,10 @@ function delta(v, v0, inv=false) {
   return `<span class="${better?'dpos':'dneg'}">${sign} ${Math.abs(d)}</span>`;
 }
 
+function fmt(v, dec=1) {
+  return isNaN(v) ? '—' : v.toFixed(dec);
+}
+
 function render(rows) {
   if (!rows || rows.length === 0) return;
   const first = rows[0], last = rows[rows.length-1];
@@ -114,14 +136,14 @@ function render(rows) {
   document.getElementById('app').innerHTML = `
     <p class="sec">riepilogo</p>
     <div class="mgrid">
-      <div class="mc"><p class="ml">Peso</p><p class="mv">${last.peso} kg</p><p class="md">${delta(last.peso,first.peso)} kg</p></div>
-      <div class="mc"><p class="ml">BMI</p><p class="mv">${last.bmi}</p><p class="md">${delta(last.bmi,first.bmi)}</p></div>
-      <div class="mc"><p class="ml">Grasso</p><p class="mv">${last.grasso}%</p><p class="md">${delta(last.grasso,first.grasso)}%</p></div>
-      <div class="mc"><p class="ml">Muscolo</p><p class="mv">${last.muscolo} kg</p><p class="md">${delta(last.muscolo,first.muscolo,true)} kg</p></div>
-      <div class="mc"><p class="ml">Acqua</p><p class="mv">${last.acqua}%</p><p class="md">${delta(last.acqua,first.acqua,true)}%</p></div>
-      <div class="mc"><p class="ml">Grasso visc.</p><p class="mv">${last.gvisc}</p><p class="md">${delta(last.gvisc,first.gvisc)}</p></div>
-      <div class="mc"><p class="ml">BMR</p><p class="mv">${last.bmr}</p><p class="md">${delta(last.bmr,first.bmr,true)} kcal</p></div>
-      <div class="mc"><p class="ml">Età corp.</p><p class="mv">${last.eta}</p><p class="md">${delta(last.eta,first.eta)}</p></div>
+      <div class="mc"><p class="ml">Peso</p><p class="mv">${fmt(last.peso)} kg</p><p class="md">${delta(last.peso,first.peso)} kg</p></div>
+      <div class="mc"><p class="ml">BMI</p><p class="mv">${fmt(last.bmi)}</p><p class="md">${delta(last.bmi,first.bmi)}</p></div>
+      <div class="mc"><p class="ml">Grasso</p><p class="mv">${fmt(last.grasso)}%</p><p class="md">${delta(last.grasso,first.grasso)}%</p></div>
+      <div class="mc"><p class="ml">Muscolo</p><p class="mv">${fmt(last.muscolo)} kg</p><p class="md">${delta(last.muscolo,first.muscolo,true)} kg</p></div>
+      <div class="mc"><p class="ml">Acqua</p><p class="mv">${fmt(last.acqua)}%</p><p class="md">${delta(last.acqua,first.acqua,true)}%</p></div>
+      <div class="mc"><p class="ml">Grasso visc.</p><p class="mv">${fmt(last.gvisc,0)}</p><p class="md">${delta(last.gvisc,first.gvisc)}</p></div>
+      <div class="mc"><p class="ml">BMR</p><p class="mv">${fmt(last.bmr,0)}</p><p class="md">${delta(last.bmr,first.bmr,true)} kcal</p></div>
+      <div class="mc"><p class="ml">Età corp.</p><p class="mv">${fmt(last.eta,0)}</p><p class="md">${delta(last.eta,first.eta)}</p></div>
     </div>
     <div class="tabs">
       <button class="tb active" onclick="setTab(this,'peso')">Peso</button>
@@ -149,7 +171,10 @@ function render(rows) {
     ]},
     options:{responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}, tooltip:{mode:'index',intersect:false}},
-      scales:{x:{ticks:{color:tc,font:{size:10},maxTicksLimit:12,maxRotation:45},grid:{color:gc}}, y:{ticks:{color:tc,font:{size:10}},grid:{color:gc}}}
+      scales:{
+        x:{ticks:{color:tc,font:{size:10},maxTicksLimit:12,maxRotation:45},grid:{color:gc}},
+        y:{ticks:{color:tc,font:{size:10}},grid:{color:gc}}
+      }
     }
   });
 
@@ -166,7 +191,10 @@ function render(rows) {
     },
     options:{responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:true, labels:{color:tc,font:{size:11},boxWidth:10,boxHeight:10}}, tooltip:{mode:'index',intersect:false}},
-      scales:{x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}}, y:{ticks:{color:tc,font:{size:10}},grid:{color:gc}}}
+      scales:{
+        x:{ticks:{color:tc,font:{size:11}},grid:{color:gc}},
+        y:{ticks:{color:tc,font:{size:10}},grid:{color:gc}}
+      }
     }
   });
 }
