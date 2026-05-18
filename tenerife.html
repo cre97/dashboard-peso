@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenerife 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sand: #F5EFE0;
+  --ocean: #1B4F72;
+  --ocean-light: #2E86AB;
+  --lava: #C0392B;
+  --sun: #E8A838;
+  --green: #1A6B3A;
+  --text: #1a1a1a;
+  --muted: #888;
+  --card: #fff;
+  --border: rgba(0,0,0,0.08);
+  --radius: 12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);min-height:100vh}
+
+/* HEADER */
+.hero{background:linear-gradient(135deg,var(--ocean) 0%,var(--ocean-light) 60%,#4CAAB5 100%);padding:2rem 1.2rem 1.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-title{font-family:'Playfair Display',serif;font-size:28px;color:#fff;margin-bottom:4px}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.75);margin-bottom:1.2rem}
+.hero-dates{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.15);border-radius:999px;padding:6px 14px;font-size:12px;color:#fff;font-weight:500}
+
+/* NAV TABS */
+.nav{display:flex;gap:6px;padding:1rem 1.2rem 0;overflow-x:auto;background:var(--sand);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;font-size:12px;font-weight:500;padding:6px 14px;border-radius:999px;border:.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .2s}
+.ntab.active{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+
+/* CONTENT */
+.content{padding:1.2rem;max-width:600px;margin:0 auto}
+.section{display:none}
+.section.active{display:block}
+
+/* CARDS */
+.card{background:var(--card);border-radius:var(--radius);border:.5px solid var(--border);margin-bottom:12px;overflow:hidden}
+.card-header{padding:14px 16px 10px;display:flex;align-items:flex-start;gap:10px}
+.card-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;line-height:1.3}
+.card-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card-body{padding:0 16px 14px}
+.card-body p{font-size:13px;line-height:1.6;color:#444;margin-bottom:8px}
+.card-body p:last-child{margin-bottom:0}
+
+/* TAGS */
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px}
+.tag-sea{background:#EBF5FB;color:var(--ocean)}
+.tag-hike{background:#E9F7EF;color:var(--green)}
+.tag-food{background:#FEF9E7;color:#B7770D}
+.tag-info{background:#F2F3F4;color:#555}
+.tag-warn{background:#FDEDEC;color:var(--lava)}
+
+/* INFO ROWS */
+.info-row{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:.5px solid var(--border);font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-label{font-weight:500;min-width:110px;flex-shrink:0;color:#555}
+.info-val{color:var(--text);line-height:1.5}
+.info-val a{color:var(--ocean-light);text-decoration:none}
+
+/* EDIT */
+.edit-btn{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);border:none;background:none;cursor:pointer;padding:8px 16px;border-top:.5px solid var(--border);width:100%}
+.edit-btn:hover{color:var(--ocean)}
+.edit-area{display:none;padding:0 16px 14px}
+.edit-area.open{display:block}
+textarea.note{width:100%;min-height:80px;border:.5px solid var(--border);border-radius:8px;padding:10px;font-size:13px;font-family:'DM Sans',sans-serif;resize:vertical;color:var(--text);background:#fafafa}
+textarea.note:focus{outline:none;border-color:var(--ocean-light)}
+.save-btn{margin-top:6px;font-size:12px;padding:6px 14px;border-radius:999px;background:var(--ocean);color:#fff;border:none;cursor:pointer;font-weight:500}
+
+/* DAY BADGE */
+.day-badge{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.day-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--ocean)}
+.day-date{font-size:12px;color:var(--muted)}
+.day-line{flex:1;height:.5px;background:var(--border)}
+
+/* ALERT */
+.alert{background:#FEF9E7;border:.5px solid #F9E3A0;border-radius:8px;padding:10px 14px;font-size:12px;color:#7D6608;margin-bottom:10px;line-height:1.5}
+.alert strong{color:#B7770D}
+
+/* BOOKING LINK */
+.book-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--ocean-light);text-decoration:none;border:.5px solid var(--ocean-light);border-radius:999px;padding:4px 12px;margin-top:6px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-title">🏝 Tenerife 2026</div>
+  <div class="hero-sub">Costa Adeje · Mare & Trekking</div>
+  <div class="hero-dates">📅 Mercoledì 21 — Martedì 27 Maggio</div>
+</div>
+
+<div class="nav">
+  <button class="ntab active" onclick="show('info')">📌 Info</button>
+  <button class="ntab" onclick="show('g1')">Mer 21</button>
+  <button class="ntab" onclick="show('g2')">Gio 22</button>
+  <button class="ntab" onclick="show('g3')">Ven 23</button>
+  <button class="ntab" onclick="show('g4')">Sab 24</button>
+  <button class="ntab" onclick="show('g5')">Dom 25</button>
+  <button class="ntab" onclick="show('g6')">Lun 26</button>
+  <button class="ntab" onclick="show('g7')">Mar 27</button>
+</div>
+
+<div class="content">
+
+<!-- ═══════════════ INFO ═══════════════ -->
+<div class="section active" id="sec-info">
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🏠</div>
+      <div><div class="card-title">Casa</div><div class="card-sub">Costa Adeje</div></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><span class="info-label">Coordinate</span><span class="info-val">28°04'45.6"N 16°43'30.5"W</span></div>
+      <div class="info-row"><span class="info-label">Maps</span><span class="info-val"><a href="https://maps.google.com/?q=28.079333,-16.725139" target="_blank">Apri in Google Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F2F3F4">✈️</div>
+      <div><div class="card-title">Aeroporto Tenerife Sud</div><div class="card-sub">TFS — Reina Sofía</div></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><span class="info-label">Indirizzo</span><span class="info-val">TF-1, Km 47, 38610 Granadilla de Abona</span></div>
+      <div class="info-row"><span class="info-label">Distanza casa</span><span class="info-val">~25 km · ~25 min in auto</span></div>
+      <div class="info-row"><span class="info-label">Maps</span><span class="info-val"><a href="https://maps.google.com/?q=28.0445,-16.5725" target="_blank">Apri in Google Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🛒</div>
+      <div><div class="card-title">Mercadona</div><div class="card-sub">Supermercato consigliato — ⭐ 4.4 · 4000+ recensioni</div></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><span class="info-label">Indirizzo</span><span class="info-val">C.C. San Eugenio, Av. de los Pueblos S/N, Costa Adeje</span></div>
+      <div class="info-row"><span class="info-label">Distanza casa</span><span class="info-val">~900 m · 3 min in auto</span></div>
+      <div class="info-row"><span class="info-label">Orari</span><span class="info-val">Lun–Sab 9:00–21:30 · <strong>Domenica CHIUSO</strong></span></div>
+      <div class="info-row"><span class="info-label">Tel</span><span class="info-val"><a href="tel:+34922715150">+34 922 71 51 50</a></span></div>
+      <div class="info-row"><span class="info-label">Maps</span><span class="info-val"><a href="https://maps.google.com/?q=28.0771144,-16.7313872" target="_blank">Apri in Google Maps →</a></span></div>
+      <div class="info-row"><span class="info-label">Nota</span><span class="info-val">La domenica usa <strong>SuperDino Torviscas</strong> (aperto tutti i giorni 8:30–22:00, 1 km dalla casa)</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Picamar Tapas Bistrò</div><div class="card-sub">Ristorante serata — ⭐ 4.8 · Traveller's Choice 2025</div></div>
+    </div>
+    <div class="card-body">
+      <div class="alert"><strong>📞 Prenota in anticipo</strong> — è piccolo (pochi tavoli) e molto popolare. Chiuso lunedì e martedì.</div>
+      <div class="info-row"><span class="info-label">Indirizzo</span><span class="info-val">C.C. Terra Nova, Terrace Top Floor, Av. de España 5, Costa Adeje</span></div>
+      <div class="info-row"><span class="info-label">Distanza casa</span><span class="info-val">~700 m · 10 min a piedi</span></div>
+      <div class="info-row"><span class="info-label">Orari</span><span class="info-val">Mer–Dom: 18:00–23:00 · <strong>Lun/Mar: CHIUSO</strong></span></div>
+      <div class="info-row"><span class="info-label">Cucina</span><span class="info-val">Tapas di mare, cucina mediterranea e spagnola con vista oceano al tramonto</span></div>
+      <div class="info-row"><span class="info-label">Prezzo</span><span class="info-val">€20–30 a persona · ottimo rapporto qualità/prezzo</span></div>
+      <div class="info-row"><span class="info-label">Tel</span><span class="info-val"><a href="tel:+34629332206">+34 629 33 22 06</a></span></div>
+      <div class="info-row"><span class="info-label">Maps</span><span class="info-val"><a href="https://maps.google.com/?q=28.079949,-16.733872" target="_blank">Apri in Google Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FDEDEC">🚗</div>
+      <div><div class="card-title">Info utili</div><div class="card-sub">Numeri, meteo, consigli pratici</div></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><span class="info-label">Emergenze</span><span class="info-val"><a href="tel:112">112</a></span></div>
+      <div class="info-row"><span class="info-label">Polizia locale</span><span class="info-val"><a href="tel:+34922756200">+34 922 75 62 00</a></span></div>
+      <div class="info-row"><span class="info-label">Meteo</span><span class="info-val">Maggio: 22–27°C, sole quasi garantito, vento atlantico la sera</span></div>
+      <div class="info-row"><span class="info-label">Moneta</span><span class="info-val">Euro · carte accettate ovunque</span></div>
+      <div class="info-row"><span class="info-label">Guida</span><span class="info-val">Si guida a destra · limite autostrada 120 km/h</span></div>
+      <div class="info-row"><span class="info-label">Fuso orario</span><span class="info-val">UTC+1 (1 ora indietro rispetto all'Italia)</span></div>
+      <div class="info-row"><span class="info-label">Lingua</span><span class="info-val">Spagnolo · inglese capito quasi ovunque</span></div>
+      <div class="info-row"><span class="info-label">Farmacia</span><span class="info-val">Farmacia Adeje · Calle Grande 2 · <a href="tel:+34922780006">+34 922 78 00 06</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🥾</div>
+      <div><div class="card-title">Prenotazioni trekking necessarie</div><div class="card-sub">Da fare PRIMA della partenza</div></div>
+    </div>
+    <div class="card-body">
+      <div class="alert"><strong>⚠️ Prenota subito!</strong> I posti sono limitati e si esauriscono in anticipo.</div>
+      <div class="info-row"><span class="info-label">Barranco del Infierno</span><span class="info-val">Max 300 persone/giorno · €8.50 · <a href="https://www.barrancodeinfierno.com" target="_blank">barrancodeinfierno.com →</a></span></div>
+      <div class="info-row"><span class="info-label">Barranco de Masca</span><span class="info-val">~€41 + €25 barca · <a href="https://www.caminobarrancodemasca.com/en/activities/booking/book-your-visit-to-the-masca-trail/" target="_blank">caminobarrancodemasca.com →</a></span></div>
+      <div class="info-row"><span class="info-label">Teide summit</span><span class="info-val">Permesso gratuito ma limitato · <a href="https://www.reservasparquesnacionales.es" target="_blank">reservasparquesnacionales.es →</a></span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ GIORNO 1 ═══════════════ -->
+<div class="section" id="sec-g1">
+  <div class="day-badge"><div class="day-num">1</div><div class="day-date">Mercoledì 21 maggio · Arrivo</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F2F3F4">✈️</div>
+      <div><div class="card-title">Arrivo all'aeroporto</div><div class="card-sub">~10:00 · Tenerife Sud TFS</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-info">Logistica</span></div>
+      <p>Ritiro auto a noleggio, ~25 min di guida fino a casa. Sosta al <strong>Mercadona</strong> per la spesa della settimana lungo il tragitto.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🏖️</div>
+      <div><div class="card-title">Playa La Pinta</div><div class="card-sub">Pomeriggio · 5 min in auto dalla casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-sea">Mare</span><span class="tag tag-info">Libera</span></div>
+      <p>Spiaggia più vicina e più raccolta della zona, sabbia scura vulcanica, ottima per snorkeling con pesci a 10–20 m dalla riva. Ideale per il primo pomeriggio dopo l'arrivo.</p>
+      <p><strong>Coordinate:</strong> 28.0798°N 16.7352°W</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g1-2')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g1-2"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g1-2')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena a casa</div><div class="card-sub">Sera</div></div>
+    </div>
+    <div class="card-body">
+      <p>Primo giorno, cena leggera con la spesa del Mercadona. Riposo dopo il viaggio.</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g1-3')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g1-3"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g1-3')">Salva</button></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 2 ═══════════════ -->
+<div class="section" id="sec-g2">
+  <div class="day-badge"><div class="day-num">2</div><div class="day-date">Giovedì 22 maggio · Trekking</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🥾</div>
+      <div><div class="card-title">Barranco del Infierno</div><div class="card-sub">Mattina · 20 min da casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-hike">Trekking</span><span class="tag tag-warn">Prenotazione richiesta</span></div>
+      <div class="alert"><strong>⏰ Parti entro le 8:00</strong> — il parcheggio vicino si riempie presto. Parcheggio Casa Fuerte, poi 8 min a piedi al sentiero.</div>
+      <p><strong>Difficoltà:</strong> Facile–Media · <strong>Distanza:</strong> 6,5 km a/r · <strong>Dislivello:</strong> +200 m · <strong>Durata:</strong> 3–4 ore</p>
+      <p>Canyon vulcanico a due passi da casa con la cascata più alta di Tenerife. Vegetazione lussureggiante, pareti rocciose fino a 400 m. Max 300 persone/giorno, molto ben mantenuto.</p>
+      <p><strong>Costo:</strong> €8.50 · Include casco · <strong>Prenotazione:</strong> <a href="https://www.barrancodeinfierno.com" target="_blank">barrancodeinfierno.com</a></p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g2-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g2-1"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g2-1')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🏊</div>
+      <div><div class="card-title">Playa Las Galgas</div><div class="card-sub">Pomeriggio · 15 min da casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-sea">Mare</span><span class="tag tag-info">Libera</span><span class="tag tag-info">Snorkeling</span></div>
+      <p>Caletta raccolta con sabbia nera e ciottoli, acqua cristallina perfetta per snorkeling. Poco affollata rispetto alle spiagge principali. Portare scarpe da scoglio.</p>
+      <p><strong>Coordinate:</strong> 28.1217°N 16.7778°W</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g2-2')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g2-2"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g2-2')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena a casa</div><div class="card-sub">Sera</div></div>
+    </div>
+    <div class="card-body"><p>Dopo la giornata di trekking e mare, cena proteica a casa. Ottimo il pesce fresco del Mercadona.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 3 ═══════════════ -->
+<div class="section" id="sec-g3">
+  <div class="day-badge"><div class="day-num">3</div><div class="day-date">Venerdì 23 maggio · Mare</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🏖️</div>
+      <div><div class="card-title">Playa del Duque</div><div class="card-sub">Mattina · 10 min da casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-sea">Mare</span><span class="tag tag-info">Libera</span></div>
+      <p>Una delle spiagge più belle della zona: sabbia fine (mista bianca/nera), acque turchesi pulitissime. Ottimo per nuoto. Arriva entro le 9:30 per trovare posto libero.</p>
+      <p><strong>Coordinate:</strong> 28.0918°N 16.7441°W</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g3-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g3-1"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g3-1')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena al Picamar Tapas Bistrò 🌟</div><div class="card-sub">Sera · <strong>LA serata al ristorante</strong></div></div>
+    </div>
+    <div class="card-body">
+      <div class="alert"><strong>📞 Hai prenotato?</strong> Chiamare al +34 629 33 22 06 — chiuso lun/mar, meglio prenotare almeno 2–3 giorni prima.</div>
+      <p>Tapas di mare con vista tramonto sull'oceano. Provare: <em>polpo, tartare di tonno, tuna tataki, bao buns</em>. Budget ~€25–30 a persona. Prenotare per le 20:30 per godersi il tramonto.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 4 ═══════════════ -->
+<div class="section" id="sec-g4">
+  <div class="day-badge"><div class="day-num">4</div><div class="day-date">Sabato 24 maggio · Teide</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🌋</div>
+      <div><div class="card-title">Parco Nazionale del Teide</div><div class="card-sub">Tutto il giorno · 1h da casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-hike">Trekking</span><span class="tag tag-warn">Permesso summit</span></div>
+      <div class="alert"><strong>🌋 Permesso summit gratuito ma limitatissimo</strong> — prenotare su reservasparquesnacionales.es mesi prima. Senza permesso ci si ferma alla stazione funivia (già spettacolare).</div>
+      <p><strong>Sentiero consigliato:</strong> Montana Blanca → Altavista (3.718 m) · +600 m dislivello · 4–5 ore · paesaggio lunare mozzafiato.</p>
+      <p><strong>Alternativa:</strong> Funivia Teide (€29 a/r) fino a 3.555 m, poi breve cammino. Partire <strong>entro le 7:00</strong> per evitare code e nuvole pomeridiane.</p>
+      <p><strong>Portare:</strong> Giacca (in vetta 10–15°C), protezione solare alta, acqua abbondante, pranzo al sacco.</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g4-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g4-1"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g4-1')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena a casa</div><div class="card-sub">Sera · rientro serale</div></div>
+    </div>
+    <div class="card-body"><p>Giornata intensa — cena veloce a casa. Pasta o riso con proteine, preparazione facile.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 5 ═══════════════ -->
+<div class="section" id="sec-g5">
+  <div class="day-badge"><div class="day-num">5</div><div class="day-date">Domenica 25 maggio · Masca</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🥾</div>
+      <div><div class="card-title">Barranco de Masca</div><div class="card-sub">Mattina · 45 min da casa</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-hike">Trekking</span><span class="tag tag-warn">Prenotazione + barca obbligatoria</span></div>
+      <div class="alert"><strong>⚠️ Logistica complessa — leggere bene!</strong> Parcheggio al cimitero di Santiago del Teide → Bus 355 per Masca → discesa al canyon (3h) → barca da Masca Beach a Los Gigantes (€25) → Bus 462 per rientrare.</div>
+      <p><strong>Difficoltà:</strong> Alta · <strong>Distanza:</strong> 9,5 km · <strong>Dislivello:</strong> -840 m · <strong>Durata totale:</strong> 5–6 ore</p>
+      <p>Il trekking più scenografico di Tenerife: il "Machu Picchu dell'isola". Gola tra scogliere altissime fino al mare nero. Solo discesa — obbligatoria la barca al ritorno.</p>
+      <p><strong>Costo:</strong> ~€41 permesso + casco · €25 barca · <strong>Prenotazione:</strong> <a href="https://www.caminobarrancodemasca.com/en/activities/booking/book-your-visit-to-the-masca-trail/" target="_blank">caminobarrancodemasca.com</a></p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g5-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g5-1"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g5-1')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena a casa</div><div class="card-sub">Domenica — Mercadona chiuso!</div></div>
+    </div>
+    <div class="card-body">
+      <div class="alert"><strong>🛒 Attenzione:</strong> Mercadona è chiuso la domenica. Fare scorta il sabato sera, oppure usare SuperDino Torviscas (aperto 9:00–21:00).</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 6 ═══════════════ -->
+<div class="section" id="sec-g6">
+  <div class="day-badge"><div class="day-num">6</div><div class="day-date">Lunedì 26 maggio · Relax</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🌊</div>
+      <div><div class="card-title">Playa Torviscas</div><div class="card-sub">Mattina/pomeriggio · 5 min a piedi</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-sea">Mare</span><span class="tag tag-info">Libera</span></div>
+      <p>Giornata di recupero dopo Masca. Spiaggia lunga con sabbia nera, ottimi tramonti. Buona per nuotare, acque generalmente calme. Evitare l'orario 12–15 per il caldo.</p>
+      <p><strong>Coordinate:</strong> 28.0824°N 16.7360°W</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g6-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g6-1"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g6-1')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#E9F7EF">🥾</div>
+      <div><div class="card-title">Passeggiata costiera Costa Adeje</div><div class="card-sub">Sera · da Torviscas a Playa del Duque</div></div>
+    </div>
+    <div class="card-body">
+      <div class="tags"><span class="tag tag-hike">Passeggiata</span></div>
+      <p>Lungomare pedonale di 4 km, pianeggiante, con vista oceano e La Gomera sullo sfondo. Perfetto al tramonto. Nessuna prenotazione, nessun costo.</p>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g6-2')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g6-2"><textarea class="note" placeholder="Le tue note..."></textarea><button class="save-btn" onclick="saveNote('note-g6-2')">Salva</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#FEF9E7">🍽️</div>
+      <div><div class="card-title">Cena a casa</div><div class="card-sub">Picamar è chiuso il lunedì</div></div>
+    </div>
+    <div class="card-body"><p>Ultima cena a casa prima della partenza. Svuotare frigo e fare le valigie.</p></div>
+  </div>
+</div>
+
+<!-- ═══════════════ GIORNO 7 ═══════════════ -->
+<div class="section" id="sec-g7">
+  <div class="day-badge"><div class="day-num">7</div><div class="day-date">Martedì 27 maggio · Partenza</div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#EBF5FB">🌅</div>
+      <div><div class="card-title">Ultimo bagno</div><div class="card-sub">Mattina presto</div></div>
+    </div>
+    <div class="card-body">
+      <p>Playa La Pinta è a 5 minuti — ultimo tuffo prima di partire. Check-out e consegna chiavi, poi in auto verso l'aeroporto (partire con almeno 2h30 di anticipo).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#F2F3F4">✈️</div>
+      <div><div class="card-title">Rientro · Tenerife Sud → Italia</div><div class="card-sub">Consegna auto + volo</div></div>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><span class="info-label">Consegna auto</span><span class="info-val">Aeroporto TFS · verificare orario ufficio noleggio</span></div>
+      <div class="info-row"><span class="info-label">Check-in</span><span class="info-val">Almeno 2h prima del volo</span></div>
+    </div>
+    <button class="edit-btn" onclick="toggleEdit('note-g7-1')">✏️ Aggiungi nota</button>
+    <div class="edit-area" id="note-g7-1"><textarea class="note" placeholder="Orario volo, note..."></textarea><button class="save-btn" onclick="saveNote('note-g7-1')">Salva</button></div>
+  </div>
+</div>
+
+</div><!-- end content -->
+
+<script>
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleEdit(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  if (el.classList.contains('open')) {
+    const saved = localStorage.getItem(id);
+    if (saved) el.querySelector('textarea').value = saved;
+    el.querySelector('textarea').focus();
+  }
+}
+
+function saveNote(id) {
+  const val = document.getElementById(id).querySelector('textarea').value;
+  localStorage.setItem(id, val);
+  const btn = document.getElementById(id).querySelector('.save-btn');
+  btn.textContent = '✅ Salvato!';
+  setTimeout(()=>{ btn.textContent='Salva'; document.getElementById(id).classList.remove('open'); }, 1200);
+}
+
+// Carica note salvate all'avvio
+document.querySelectorAll('.edit-area').forEach(area => {
+  const saved = localStorage.getItem(area.id);
+  if (saved) area.querySelector('textarea').value = saved;
+});
+</script>
+</body>
+</html>
