@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenerife 2026 · Luca</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--sand:#F5EFE0;--ocean:#1B4F72;--ocean-l:#2E86AB;--lava:#C0392B;--sun:#E8A838;--green:#1A6B3A;--text:#1a1a1a;--muted:#888;--card:#fff;--border:rgba(0,0,0,0.08);--r:12px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--text);min-height:100vh;font-size:14px}
+.hero{background:linear-gradient(135deg,#0d3b5e 0%,var(--ocean-l) 65%,#4CAAB5 100%);padding:1.6rem 1.2rem 1.2rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M20 20h20v20H20zM0 0h20v20H0z'/%3E%3C/g%3E%3C/svg%3E")}
+.hero-title{font-family:'Playfair Display',serif;font-size:26px;color:#fff;position:relative}
+.hero-sub{font-size:12px;color:rgba(255,255,255,0.7);margin:2px 0 12px;position:relative}
+.hero-pills{display:flex;flex-wrap:wrap;gap:6px;position:relative}
+.pill{font-size:11px;font-weight:500;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,0.18);color:#fff;border:.5px solid rgba(255,255,255,0.3)}
+.nav{display:flex;gap:5px;padding:.8rem 1rem 0;overflow-x:auto;background:var(--sand);position:sticky;top:0;z-index:100;border-bottom:.5px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.ntab{flex-shrink:0;font-size:12px;font-weight:500;padding:5px 13px;border-radius:999px;border:.5px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .2s;font-family:'DM Sans',sans-serif}
+.ntab.active{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.main{padding:1rem;max-width:600px;margin:0 auto}
+.section{display:none}.section.active{display:block}
+.card{background:var(--card);border-radius:var(--r);border:.5px solid var(--border);margin-bottom:10px;overflow:hidden}
+.ch{padding:12px 14px 8px;display:flex;align-items:flex-start;gap:10px}
+.ci{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.ct{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;line-height:1.3}
+.cs{font-size:11px;color:var(--muted);margin-top:1px}
+.cb{padding:0 14px 12px}
+.ir{display:flex;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border);font-size:13px;align-items:flex-start}
+.ir:last-child{border-bottom:none}
+.il{font-weight:500;min-width:110px;flex-shrink:0;color:#555;font-size:12px}
+.iv{color:var(--text);line-height:1.5;word-break:break-word;flex:1}
+.iv a{color:var(--ocean-l);text-decoration:none}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px}
+.ts{background:#EBF5FB;color:var(--ocean)}.th{background:#E9F7EF;color:var(--green)}
+.tf{background:#FEF9E7;color:#B7770D}.ti{background:#F2F3F4;color:#555}.tw{background:#FDEDEC;color:var(--lava)}
+.alert{background:#FEF9E7;border:.5px solid #F9E3A0;border-radius:8px;padding:9px 12px;font-size:12px;color:#7D6608;margin-bottom:8px;line-height:1.5}
+.alert strong{color:#B7770D}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.gimg{aspect-ratio:1;border-radius:8px;object-fit:cover;cursor:pointer;transition:opacity .2s;width:100%;background:#eee}
+.gimg:hover{opacity:.82}
+.lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:1000;align-items:center;justify-content:center;flex-direction:column;padding:1rem}
+.lb.open{display:flex}
+.lb img{max-width:90vw;max-height:78vh;border-radius:8px;object-fit:contain}
+.lb-close{position:absolute;top:1rem;right:1rem;color:#fff;font-size:30px;cursor:pointer;background:none;border:none;line-height:1}
+.lb-caption{color:rgba(255,255,255,0.75);font-size:13px;margin-top:10px;text-align:center}
+.upload-zone{border:1.5px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:8px}
+.upload-zone:hover{border-color:var(--ocean-l)}
+.upload-zone p{font-size:12px;color:var(--muted)}
+.file-list{display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fafafa;border-radius:8px;border:.5px solid var(--border)}
+.file-item-name{font-size:12px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-item-del{font-size:15px;color:var(--muted);background:none;border:none;cursor:pointer;padding:0 2px}
+.thumb-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+.thumb-grid img{aspect-ratio:1;border-radius:6px;object-fit:cover;cursor:pointer;width:100%}
+.day-badge{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.day-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--ocean)}
+.day-info{display:flex;flex-direction:column}
+.day-date{font-size:13px;font-weight:600}
+.day-theme{font-size:11px;color:var(--muted)}
+.day-line{flex:1;height:.5px;background:var(--border)}
+[contenteditable]{outline:none;min-height:1em;border-radius:4px;transition:background .15s}
+[contenteditable]:focus{background:rgba(55,138,221,0.07);padding:2px 4px;margin:-2px -4px}
+p[contenteditable]{font-size:13px;line-height:1.6;color:#444;margin-bottom:6px}
+p[contenteditable]:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-title">🏝 Tenerife 2026</div>
+  <div class="hero-sub">Luca · Costa Adeje · Mare &amp; Trekking</div>
+  <div class="hero-pills">
+    <span class="pill">✈️ 20–26 Maggio</span>
+    <span class="pill">🚗 Seat Ibiza Auto</span>
+    <span class="pill">🏠 Costa Adeje</span>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="ntab active" onclick="show('info',this)">📌 Info</button>
+  <button class="ntab" onclick="show('g1',this)">Mer 20</button>
+  <button class="ntab" onclick="show('g2',this)">Gio 21</button>
+  <button class="ntab" onclick="show('g3',this)">Ven 22</button>
+  <button class="ntab" onclick="show('g4',this)">Sab 23</button>
+  <button class="ntab" onclick="show('g5',this)">Dom 24</button>
+  <button class="ntab" onclick="show('g6',this)">Lun 25</button>
+  <button class="ntab" onclick="show('g7',this)">Mar 26</button>
+</div>
+
+<div class="main">
+
+<!-- INFO -->
+<div class="section active" id="sec-info">
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">🏠</div>
+      <div><div class="ct">Casa</div><div class="cs">Costa Adeje</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Coordinate</span><span class="iv" id="e-casa-coord" contenteditable>28°04'45.6"N 16°43'30.5"W</span></div>
+      <div class="ir"><span class="il">Google Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.079333,-16.725139" target="_blank">📍 Apri Maps →</a></span></div>
+      <div class="ir"><span class="il">Note casa</span><span class="iv" id="e-casa-note" contenteditable>Codice porta / wifi / check-in…</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#F2F3F4">📋</div>
+      <div><div class="ct">Prenotazioni</div><div class="cs">Numeri di conferma</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Booking alloggio</span><span class="iv"><strong>6199389513</strong></span></div>
+      <div class="ir"><span class="il">Auto (AutoReisen)</span><span class="iv" id="e-auto" contenteditable><strong>5593951</strong> · Seat Ibiza Automatic · €98,38</span></div>
+      <div class="ir"><span class="il">AutoReisen tel</span><span class="iv"><a href="tel:+34922392216">+34 922 392216</a> · lun–dom 07:00–23:59</span></div>
+      <div class="ir"><span class="il">Ritiro auto</span><span class="iv">Aeroporto TFS · 20/05 ore 10:00</span></div>
+      <div class="ir"><span class="il">Riconsegna auto</span><span class="iv">Aeroporto TFS · 26/05 ore 09:00</span></div>
+      <div class="ir"><span class="il">Volo ritorno</span><span class="iv">EasyJet · 26/05 ore 12:10 → Linate</span></div>
+      <div class="ir"><span class="il">Gate / Terminal</span><span class="iv" id="e-gate" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire gate e terminal…</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#F5F0FF">✈️</div>
+      <div><div class="ct">Aeroporto Tenerife Sud TFS</div><div class="cs">Reina Sofía</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Indirizzo</span><span class="iv">TF-1, Km 47, 38610 Granadilla de Abona</span></div>
+      <div class="ir"><span class="il">Distanza casa</span><span class="iv">~25 km · ~25 min in auto</span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.0445,-16.5725" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#E9F7EF">🛒</div>
+      <div><div class="ct">Mercadona</div><div class="cs">⭐ 4.4 · supermercato consigliato</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Indirizzo</span><span class="iv">C.C. San Eugenio, Av. de los Pueblos S/N</span></div>
+      <div class="ir"><span class="il">Distanza casa</span><span class="iv">~900 m · 3 min in auto</span></div>
+      <div class="ir"><span class="il">Orari</span><span class="iv">Lun–Sab 9:00–21:30 · <strong style="color:var(--lava)">Dom CHIUSO</strong></span></div>
+      <div class="ir"><span class="il">Dom alternativa</span><span class="iv">SuperDino Torviscas 9:00–21:00 (1 km)</span></div>
+      <div class="ir"><span class="il">Tel</span><span class="iv"><a href="tel:+34922715150">+34 922 71 51 50</a></span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.0771,-16.7313" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct">Picamar Tapas Bistrò</div><div class="cs">⭐ 4.8 · Traveller's Choice 2025</div></div></div>
+    <div class="cb">
+      <div class="alert"><strong>📞 Prenota in anticipo!</strong> Piccolo, molto popolare — chiuso lun/mar.</div>
+      <div class="ir"><span class="il">Indirizzo</span><span class="iv">C.C. Terra Nova, Terrace, Av. de España 5</span></div>
+      <div class="ir"><span class="il">Orari</span><span class="iv">Mer–Dom 18:00–23:00</span></div>
+      <div class="ir"><span class="il">Prezzo</span><span class="iv">~€20–30 p.p.</span></div>
+      <div class="ir"><span class="il">Tel</span><span class="iv"><a href="tel:+34629332206">+34 629 33 22 06</a></span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.0799,-16.7338" target="_blank">📍 Apri Maps →</a></span></div>
+      <div class="ir"><span class="il">Prenotazione</span><span class="iv" id="e-rist-pren" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire data/ora prenotazione…</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FDEDEC">ℹ️</div>
+      <div><div class="ct">Info pratiche</div><div class="cs">Numeri utili</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Emergenze</span><span class="iv"><a href="tel:112">112</a></span></div>
+      <div class="ir"><span class="il">Meteo maggio</span><span class="iv">22–27°C · sole · vento atlantico sera</span></div>
+      <div class="ir"><span class="il">Fuso orario</span><span class="iv">UTC+1 · 1h indietro rispetto Italia</span></div>
+      <div class="ir"><span class="il">Farmacia</span><span class="iv"><a href="tel:+34922780006">+34 922 78 00 06</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#E9F7EF">🥾</div>
+      <div><div class="ct">Prenotazioni trekking</div><div class="cs">⚠️ Da fare PRIMA di partire</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Barranco Infierno</span><span class="iv">€8.50 · <a href="https://www.barrancodeinfierno.com" target="_blank">barrancodeinfierno.com →</a></span></div>
+      <div class="ir"><span class="il">Teide PNT 07</span><span class="iv"><a href="https://www.reservasparquesnacionales.es" target="_blank">reservasparquesnacionales.es →</a></span></div>
+      <div class="ir"><span class="il">N° conf. Teide</span><span class="iv" id="e-teide-conf" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire dopo prenotazione…</span></div>
+      <div class="ir"><span class="il">Masca Gorge</span><span class="iv">~€41+€25 barca · <a href="https://www.caminobarrancodemasca.com/en/activities/booking/" target="_blank">caminobarrancodemasca.com →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#F2F3F4">📎</div>
+      <div><div class="ct">Documenti &amp; Foto</div><div class="cs">Carica prenotazioni, immagini, PDF</div></div></div>
+    <div class="cb">
+      <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+        <div style="font-size:28px;margin-bottom:4px">📁</div>
+        <p><strong>Tocca per caricare file</strong></p>
+        <p>Foto, PDF, screenshot prenotazioni…</p>
+      </div>
+      <input type="file" id="file-input" multiple accept="image/*,.pdf" style="display:none" onchange="handleFiles(this.files)">
+      <div class="thumb-grid" id="thumb-grid"></div>
+      <div class="file-list" id="file-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- G1 -->
+<div class="section" id="sec-g1">
+  <div class="day-badge"><div class="day-num">1</div><div class="day-info"><div class="day-date">Mercoledì 20 maggio</div><div class="day-theme">Arrivo + Prima spiaggia</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#F2F3F4">✈️</div>
+      <div><div class="ct" contenteditable>Arrivo &amp; ritiro auto</div><div class="cs">~10:00 · Aeroporto TFS</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ti">Logistica</span></div>
+      <p contenteditable>Ritiro Seat Ibiza Automatic da AutoReisen (prenotazione 5593951). Sosta al Mercadona per la spesa della settimana. ~25 min di guida fino a casa.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF5E4">🏖️</div>
+      <div><div class="ct" contenteditable>Playa de Abama</div><div class="cs">Pomeriggio · ~30 min da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ts">Mare</span><span class="tag ti">Sabbia dorata</span><span class="tag ti">Libera</span></div>
+      <div class="gallery" id="gallery-abama">
+        <img class="gimg" src="https://www.webtenerife.co.uk/wp-content/uploads/2020/04/playa-abama-tenerife.jpg" alt="Playa Abama" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Playa_de_Abama%2C_Tenerife.jpg/1280px-Playa_de_Abama%2C_Tenerife.jpg'" onclick="openLb(this,'Playa de Abama — caletta con sabbia dorata')">
+        <img class="gimg" src="https://www.ciaoisolecanarie.com/wp-content/uploads/2021/02/abama-spiaggia.jpg" alt="Playa Abama" onerror="this.src='https://www.isoladitenerife.com/wp-content/uploads/2024/05/playa-abama.jpg'" onclick="openLb(this,'Playa de Abama — vista dalla scogliera')">
+        <img class="gimg" src="https://inviaggioallecanarie.it/wp-content/uploads/2024/09/playa-abama.jpg" alt="Playa Abama" onerror="this.src='https://azulflojito.com/wp-content/uploads/2024/12/playa-abama-tenerife.jpg'" onclick="openLb(this,'Playa de Abama — acque turchesi')">
+      </div>
+      <p contenteditable>Caletta esclusiva con sabbia dorata (rara a Tenerife!) e acque turchesi calme. Vista su La Gomera al tramonto. Parcheggio gratuito al Ritz-Carlton Abama, poi 10–15 min a piedi in discesa (ripida — scarpe comode per il rientro in salita).</p>
+      <div class="ir"><span class="il">Coordinate</span><span class="iv">28.1722°N · 16.8053°W</span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.1722,-16.8053" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena a casa</div><div class="cs">Sera · primo giorno</div></div></div>
+    <div class="cb"><p contenteditable>Cena leggera con la spesa del Mercadona. Riposo dopo il viaggio.</p></div>
+  </div>
+</div>
+
+<!-- G2 -->
+<div class="section" id="sec-g2">
+  <div class="day-badge"><div class="day-num">2</div><div class="day-info"><div class="day-date">Giovedì 21 maggio</div><div class="day-theme">Spiagge del sud selvaggio</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">🏖️</div>
+      <div><div class="ct" contenteditable>Playa de la Tejita</div><div class="cs">Mattina · ~35 min da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ts">Mare</span><span class="tag ti">Riserva naturale</span><span class="tag ti">Sabbia dorata</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/El_M%C3%A9dano%2C_Playa_La_Tejita_%28cropped%29.jpg/1280px-El_M%C3%A9dano%2C_Playa_La_Tejita_%28cropped%29.jpg" alt="La Tejita" onclick="openLb(this,'Playa de la Tejita — ai piedi della Montaña Roja')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/La_Tejita_beach_%281%29.jpg/1280px-La_Tejita_beach_%281%29.jpg" alt="La Tejita" onclick="openLb(this,'Playa de la Tejita — spiaggia selvaggia')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Montana_Roja_y_La_Tejita.jpg/1280px-Montana_Roja_y_La_Tejita.jpg" alt="Montana Roja Tejita" onclick="openLb(this,'La Tejita con la Montaña Roja sullo sfondo')">
+      </div>
+      <p contenteditable>Enorme spiaggia naturale protetta ai piedi del vulcano rosso (Montaña Roja). Sabbia dorata chiara, nessuno stabilimento, nessun ambulante. Una delle più belle del sud. Parcheggio libero vicino.</p>
+      <div class="ir"><span class="il">Coordinate</span><span class="iv">28.0197°N · 16.5443°W</span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.0197,-16.5443" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">🏄</div>
+      <div><div class="ct" contenteditable>Playa El Médano</div><div class="cs">Pomeriggio · 5 min da La Tejita</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ts">Mare</span><span class="tag ti">Windsurf · Kitesurf</span><span class="tag ti">Paese autentico</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Playa_El_M%C3%A9dano_-_Tenerife.jpg/1280px-Playa_El_M%C3%A9dano_-_Tenerife.jpg" alt="El Medano" onclick="openLb(this,'Playa El Médano — capitale del kitesurf')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/El_Medano_Tenerife.jpg/1280px-El_Medano_Tenerife.jpg" alt="El Medano" onclick="openLb(this,'El Médano — paese autentico canario')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/El_medano_windsurfers.jpg/1280px-El_medano_windsurfers.jpg" alt="El Medano windsurf" onclick="openLb(this,'El Médano — windsurf e kitesurf')">
+      </div>
+      <p contenteditable>Paese autentico non turistico, capitale del windsurf e kitesurf. Spiaggia lunga con sabbia chiara, ottimo per pranzo in uno dei locali del paese. Atmosfera molto diversa dalla Costa Adeje.</p>
+      <div class="ir"><span class="il">Coordinate</span><span class="iv">28.0487°N · 16.5392°W</span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.0487,-16.5392" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena a casa</div><div class="cs">Sera</div></div></div>
+    <div class="cb"><p contenteditable>Cena a casa.</p></div>
+  </div>
+</div>
+
+<!-- G3 -->
+<div class="section" id="sec-g3">
+  <div class="day-badge"><div class="day-num">3</div><div class="day-info"><div class="day-date">Venerdì 22 maggio</div><div class="day-theme">Teide PNT 07 + Cena speciale</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#E9F7EF">🌋</div>
+      <div><div class="ct" contenteditable>Trekking PNT 07 · Montaña Blanca → La Rambleta</div><div class="cs">Tutto il giorno · 1h da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag th">Trekking</span><span class="tag tw">Permesso summit obbligatorio</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://www.active-traveller.com/wp-content/uploads/2019/02/montana-blanca-teide-trail.jpg" alt="Montana Blanca trail" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Teide_desde_la_montana_blanca.jpg/1280px-Teide_desde_la_montana_blanca.jpg'" onclick="openLb(this,'Montaña Blanca — paesaggio lunare verso il Teide')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Pico_del_Teide%2C_Tenerife%2C_Spain_-_Dec_2009.jpg/1280px-Pico_del_Teide%2C_Tenerife%2C_Spain_-_Dec_2009.jpg" alt="Teide peak" onclick="openLb(this,'Pico del Teide — 3718m, vetta della Spagna')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Teide_from_Montaña_Blanca.jpg/1280px-Teide_from_Montaña_Blanca.jpg" alt="Teide vista" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Teide_pico_viejo_from_montana_blanca.jpg/1280px-Teide_pico_viejo_from_montana_blanca.jpg'" onclick="openLb(this,'Vista dal sentiero Montaña Blanca')">
+      </div>
+      <div class="alert"><strong>⚠️ Permesso summit gratuito ma limitatissimo.</strong> Prenotare su reservasparquesnacionales.es. Partire entro le 7:00.</div>
+      <div class="ir"><span class="il">N° conf. Teide</span><span class="iv" id="e-teide-g3" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire numero conferma…</span></div>
+      <div class="ir"><span class="il">Difficoltà</span><span class="iv">Alta · 12 km a/r · +1200 m · 5–6h</span></div>
+      <div class="ir"><span class="il">Partenza</span><span class="iv">Parcheggio Montaña Blanca, TF-21</span></div>
+      <div class="ir"><span class="il">Maps partenza</span><span class="iv"><a href="https://maps.google.com/?q=28.2833,-16.6167" target="_blank">📍 Apri Maps →</a></span></div>
+      <p style="margin-top:8px" contenteditable>Portare: giacca (10–15°C in vetta), protezione solare alta, abbondante acqua, pranzo al sacco. Senza permesso summit ci si ferma a La Rambleta (3.555m) — già spettacolare.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena al Picamar Tapas Bistrò 🌟</div><div class="cs">La serata speciale</div></div></div>
+    <div class="cb">
+      <div class="alert"><strong>📞 Hai già prenotato?</strong> +34 629 33 22 06 · Ideale ore 20:30 per il tramonto.</div>
+      <p contenteditable>Tapas di mare con vista sull'oceano al tramonto. Da provare: polpo, tartare di tonno, tuna tataki, bao buns. Budget ~€25–30 p.p.</p>
+    </div>
+  </div>
+</div>
+
+<!-- G4 -->
+<div class="section" id="sec-g4">
+  <div class="day-badge"><div class="day-num">4</div><div class="day-info"><div class="day-date">Sabato 23 maggio</div><div class="day-theme">Los Gigantes</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">⛰️</div>
+      <div><div class="ct" contenteditable>Los Gigantes — Scogliere &amp; Spiaggia</div><div class="cs">Mattina/pomeriggio · 45 min da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ts">Mare</span><span class="tag th">Panorama</span><span class="tag ti">Sabbia nera</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Los_Gigantes_Tenerife_Canary_Islands_%287370699090%29.jpg/1280px-Los_Gigantes_Tenerife_Canary_Islands_%287370699090%29.jpg" alt="Los Gigantes cliffs" onclick="openLb(this,'Los Gigantes — scogliere fino a 800m sul mare')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Los_Gigantes_cliffs_nature_landmark_and_volcanic_black_sand_beach.jpg/1280px-Los_Gigantes_cliffs_nature_landmark_and_volcanic_black_sand_beach.jpg" alt="Los Gigantes beach" onclick="openLb(this,'Los Gigantes — spiaggia nera ai piedi delle scogliere')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Los_Gigantes_Cliffs_Landmark_in_South_Tenerife_Island_Spain.jpg/1280px-Los_Gigantes_Cliffs_Landmark_in_South_Tenerife_Island_Spain.jpg" alt="Los Gigantes" onclick="openLb(this,'Los Gigantes — vista panoramica')">
+      </div>
+      <p contenteditable>Scogliere vulcaniche alte fino a 800m che piombano in mare. Spiaggia di sabbia nera ai piedi, acque cristalline ottime per snorkeling. Mirador de Archipenque per il panorama migliore prima di scendere al porto.</p>
+      <div class="ir"><span class="il">Maps spiaggia</span><span class="iv"><a href="https://maps.google.com/?q=28.2448,-16.8409" target="_blank">📍 Playa Los Gigantes →</a></span></div>
+      <div class="ir"><span class="il">Mirador</span><span class="iv"><a href="https://maps.google.com/?q=28.2413,-16.8401" target="_blank">📍 Mirador Archipenque →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena a casa</div><div class="cs" style="color:var(--lava)">⚠️ Fare scorta oggi — Mercadona chiuso domani!</div></div></div>
+    <div class="cb">
+      <div class="alert"><strong>🛒 Importante:</strong> fare spesa oggi sabato al Mercadona per domenica.</div>
+      <p contenteditable>Cena a casa.</p>
+    </div>
+  </div>
+</div>
+
+<!-- G5 -->
+<div class="section" id="sec-g5">
+  <div class="day-badge"><div class="day-num">5</div><div class="day-info"><div class="day-date">Domenica 24 maggio</div><div class="day-theme">Trekking Anaga — Afur → Taganana</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#E9F7EF">🥾</div>
+      <div><div class="ct" contenteditable>Sentiero Afur → Taganana · Anaga</div><div class="cs">Tutto il giorno · 1h30 da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag th">Trekking</span><span class="tag ti">Laurisilva</span><span class="tag ti">PR-TF 8 · 14,6 km</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://nestshostels.com/wp-content/uploads/hiking-anaga-taganana-afur.jpg" alt="Afur Taganana" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Anaga_Mountains_Tenerife_Canary_Islands.jpg/1280px-Anaga_Mountains_Tenerife_Canary_Islands.jpg'" onclick="openLb(this,'Sentiero Afur-Taganana — foresta di laurisilva')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Anaga_-_Barranco_de_Afur.jpg/1280px-Anaga_-_Barranco_de_Afur.jpg" alt="Barranco Afur" onclick="openLb(this,'Barranco de Afur — canyon verde')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Taganana_desde_el_mirador.jpg/1280px-Taganana_desde_el_mirador.jpg" alt="Taganana" onclick="openLb(this,'Taganana — il villaggio bianco sul mare')">
+      </div>
+      <p contenteditable>14.6 km nella foresta di laurisilva millenaria — una delle foreste più antiche del mondo. Canyon verde intenso, villaggi rurali, vista sull'oceano Atlantico. La traccia Strava è già pronta.</p>
+      <div class="ir"><span class="il">Traccia Strava</span><span class="iv"><a href="https://www.strava.com/routes/3491555472444343740" target="_blank">🟠 Apri su Strava →</a></span></div>
+      <div class="ir"><span class="il">Distanza</span><span class="iv">14.6 km · ~5–6h · dislivello ~600m</span></div>
+      <div class="ir"><span class="il">Maps partenza (Afur)</span><span class="iv"><a href="https://maps.google.com/?q=28.5333,-16.2833" target="_blank">📍 Villaggio Afur →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena a casa</div><div class="cs">Domenica — Mercadona chiuso</div></div></div>
+    <div class="cb">
+      <div class="alert"><strong>🛒</strong> Mercadona chiuso. Alternativa: SuperDino Torviscas (9:00–21:00).</div>
+      <p contenteditable>Cena a casa dopo la lunga giornata.</p>
+    </div>
+  </div>
+</div>
+
+<!-- G6 -->
+<div class="section" id="sec-g6">
+  <div class="day-badge"><div class="day-num">6</div><div class="day-info"><div class="day-date">Lunedì 25 maggio</div><div class="day-theme">Masca + Spiagge Los Gigantes</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#E9F7EF">🥾</div>
+      <div><div class="ct" contenteditable>Barranco de Masca</div><div class="cs">Mattina · 45 min da casa</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag th">Trekking</span><span class="tag tw">Prenotazione + barca obbligatoria</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Masca_village_Tenerife.jpg/1280px-Masca_village_Tenerife.jpg" alt="Masca village" onclick="openLb(this,'Masca — il villaggio sospeso tra le rocce')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Barranco_de_Masca.jpg/1280px-Barranco_de_Masca.jpg" alt="Barranco Masca" onclick="openLb(this,'Barranco de Masca — il canyon verso il mare')">
+        <img class="gimg" src="https://www.jet2holidays.com/blog/wp-content/uploads/2019/08/masca-beach-tenerife-1.jpg" alt="Masca beach" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Masca_beach_Tenerife.jpg/1280px-Masca_beach_Tenerife.jpg'" onclick="openLb(this,'Masca Beach — la spiaggia alla fine del canyon')">
+      </div>
+      <div class="alert"><strong>⚠️ Logistica:</strong> Parcheggio cimitero Santiago del Teide → Bus 355 → Masca (20 min) → discesa canyon (3h) → barca a Los Gigantes (€25) → Bus 462 per rientro.</div>
+      <div class="ir"><span class="il">Difficoltà</span><span class="iv">Alta · 9.5 km · -840 m · 5–6h totali</span></div>
+      <div class="ir"><span class="il">Costo</span><span class="iv">~€41 permesso+casco · €25 barca</span></div>
+      <div class="ir"><span class="il">Prenotazione</span><span class="iv"><a href="https://www.caminobarrancodemasca.com/en/activities/booking/" target="_blank">caminobarrancodemasca.com →</a></span></div>
+      <div class="ir"><span class="il">Maps partenza</span><span class="iv"><a href="https://maps.google.com/?q=28.2972,-16.8350" target="_blank">📍 Santiago del Teide →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">🏖️</div>
+      <div><div class="ct" contenteditable>Playa de la Arena</div><div class="cs">Pomeriggio · vicino Los Gigantes</div></div></div>
+    <div class="cb">
+      <div class="tags"><span class="tag ts">Mare</span><span class="tag ti">Sabbia nera</span><span class="tag ti">Bandiera Blu</span></div>
+      <div class="gallery">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/Playa_de_la_Arena%2C_Tenerife%2C_Spain_-_panoramio.jpg/1280px-Playa_de_la_Arena%2C_Tenerife%2C_Spain_-_panoramio.jpg" alt="Playa Arena" onclick="openLb(this,'Playa de la Arena — sabbia nera e acque cristalline')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Playa_de_la_Arena_TF.jpg/1280px-Playa_de_la_Arena_TF.jpg" alt="La Arena" onclick="openLb(this,'Playa de la Arena — bandiera blu')">
+        <img class="gimg" src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Playa_de_la_Arena%2C_Puerto_de_Santiago%2C_Tenerife%2C_Spain.jpg/1280px-Playa_de_la_Arena%2C_Puerto_de_Santiago%2C_Tenerife%2C_Spain.jpg" alt="La Arena snorkeling" onclick="openLb(this,'Playa de la Arena — ottima per snorkeling')">
+      </div>
+      <p contenteditable>Ottima spiaggia di sabbia nera a pochi km da Los Gigantes. Acque calme e pulite, bandiera blu, buona per snorkeling. Perfetta per il relax post-Masca prima del rientro.</p>
+      <div class="ir"><span class="il">Coordinate</span><span class="iv">28.2222°N · 16.8378°W</span></div>
+      <div class="ir"><span class="il">Maps</span><span class="iv"><a href="https://maps.google.com/?q=28.2222,-16.8378" target="_blank">📍 Apri Maps →</a></span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#FEF9E7">🍽️</div>
+      <div><div class="ct" contenteditable>Cena a casa</div><div class="cs">Penultima sera · Picamar chiuso il lun</div></div></div>
+    <div class="cb"><p contenteditable>Svuotare il frigo, iniziare le valigie.</p></div>
+  </div>
+</div>
+
+<!-- G7 -->
+<div class="section" id="sec-g7">
+  <div class="day-badge"><div class="day-num">7</div><div class="day-info"><div class="day-date">Martedì 26 maggio</div><div class="day-theme">Partenza → Milano Linate 12:10</div></div><div class="day-line"></div></div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#EBF5FB">🌅</div>
+      <div><div class="ct" contenteditable>Ultimo bagno</div><div class="cs">Mattino presto</div></div></div>
+    <div class="cb">
+      <p contenteditable>Playa La Pinta a 5 min — ultimo tuffo. Poi check-out e via verso l'aeroporto. Partire da casa entro le 8:30.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ch"><div class="ci" style="background:#F2F3F4">✈️</div>
+      <div><div class="ct">Volo EasyJet → Milano Linate</div><div class="cs">Ore 12:10 · TFS → LIN</div></div></div>
+    <div class="cb">
+      <div class="ir"><span class="il">Consegna auto</span><span class="iv">AutoReisen · ore 09:00 · Aeroporto TFS</span></div>
+      <div class="ir"><span class="il">Gate</span><span class="iv" id="e-gate-g7" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire gate…</span></div>
+      <div class="ir"><span class="il">Terminal</span><span class="iv" id="e-terminal-g7" contenteditable style="color:var(--muted);font-style:italic">Tocca per inserire terminal…</span></div>
+      <div class="ir"><span class="il">Check-in chiude</span><span class="iv" id="e-checkin-g7" contenteditable style="color:var(--muted);font-style:italic">~10:10 (2h prima) — verificare</span></div>
+      <div class="ir"><span class="il">Note</span><span class="iv" id="e-volo-note" contenteditable>Arrivare al gate con anticipo.</span></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb" onclick="closeLb()">
+  <button class="lb-close">✕</button>
+  <img id="lb-img" src="" alt="">
+  <div class="lb-caption" id="lb-cap"></div>
+</div>
+
+<script>
+// NAV
+function show(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ntab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// LIGHTBOX
+function openLb(img,cap){
+  document.getElementById('lb-img').src=img.src;
+  document.getElementById('lb-cap').textContent=cap||img.alt;
+  document.getElementById('lb').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLb(){
+  document.getElementById('lb').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.querySelector('.lb-close').onclick=e=>{e.stopPropagation();closeLb();};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+
+// CONTENTEDITABLE AUTOSAVE
+document.addEventListener('blur',e=>{
+  if(e.target.hasAttribute('contenteditable')&&e.target.id){
+    localStorage.setItem('ce-'+e.target.id,e.target.innerHTML);
+  }
+},true);
+(function restoreEdits(){
+  document.querySelectorAll('[contenteditable][id]').forEach(el=>{
+    const s=localStorage.getItem('ce-'+el.id);
+    if(s)el.innerHTML=s;
+  });
+})();
+
+// FILE UPLOAD
+let files=JSON.parse(localStorage.getItem('tenerife-files')||'[]');
+function handleFiles(input){
+  Array.from(input).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      files.push({name:file.name,type:file.type,data:e.target.result,id:Date.now()+''+Math.random()});
+      localStorage.setItem('tenerife-files',JSON.stringify(files));
+      renderFiles();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function renderFiles(){
+  const tg=document.getElementById('thumb-grid');
+  const fl=document.getElementById('file-list');
+  if(!tg||!fl)return;
+  tg.innerHTML='';fl.innerHTML='';
+  files.forEach(f=>{
+    if(f.type&&f.type.startsWith('image/')){
+      const img=document.createElement('img');
+      img.src=f.data;img.title=f.name;
+      img.onclick=()=>openLb(img,f.name);
+      tg.appendChild(img);
+    } else {
+      const icon=f.type&&f.type.includes('pdf')?'📄':'📎';
+      fl.innerHTML+=`<div class="file-item"><span style="font-size:18px">${icon}</span><span class="file-item-name">${f.name}</span><button class="file-item-del" onclick="delFile('${f.id}')">🗑</button></div>`;
+    }
+  });
+}
+function delFile(id){
+  files=files.filter(f=>f.id!==id);
+  localStorage.setItem('tenerife-files',JSON.stringify(files));
+  renderFiles();
+}
+renderFiles();
+</script>
+</body>
+</html>
